@@ -3,24 +3,24 @@ project(todo)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(todo scr/main.cpp
-        scr/cli/ArgumentParser.cpp
-        scr/cli/ArgumentParser.hpp
-        scr/cli/Command.hpp
-        scr/cli/CommandFactory.hpp
-        scr/cli/AddCommand.hpp
-        scr/cli/ListCommand.hpp
-        scr/cli/DoneCommand.hpp
-        scr/core/Task.hpp
-        scr/core/SimpleTask.hpp
-        scr/core/DeadlineTask.hpp
-        scr/core/RecurringTask.hpp
-        scr/core/TaskRepository.hpp
-        scr/storage/Storage.hpp
-        scr/storage/JsonFileStorage.hpp
-        scr/storage/JsonFileStorage.cpp
-        scr/utils/Exceptions.hpp
-        scr/utils/Constants.hpp
+add_executable(todo src/main.cpp
+        src/cli/ArgumentParser.cpp
+        src/cli/ArgumentParser.hpp
+        src/cli/Command.hpp
+        src/cli/CommandFactory.hpp
+        src/cli/AddCommand.hpp
+        src/cli/ListCommand.hpp
+        src/cli/DoneCommand.hpp
+        src/core/Task.hpp
+        src/core/SimpleTask.hpp
+        src/core/DeadlineTask.hpp
+        src/core/RecurringTask.hpp
+        src/core/TaskRepository.hpp
+        src/storage/Storage.hpp
+        src/storage/JsonFileStorage.hpp
+        src/storage/JsonFileStorage.cpp
+        src/utils/Exceptions.hpp
+        src/utils/Constants.hpp
         tests/TaskTests.cpp
         tests/RepositoryTests.cpp
         tests/ParserTests.cpp
