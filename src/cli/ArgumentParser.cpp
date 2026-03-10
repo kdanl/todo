@@ -16,6 +16,13 @@ UnderstandCommand ArgumentParser::parse(int arg_quant, char *arg_vec[]) const {
     if (command=="list") {
         return ListArguments{};
     }
+    if (command=="done") {
+        if (arg_quant<3) { //todо done 3 arg vec[2]=3 то есть если меньше 3 слов, то пользователь просто не ввел айди
+            throw std::invalid_argument("No task id"); //invalid тип ошибки из стандартной библиотеки.Он означает:передан неправильный аргумент.
+        }
+        int TaskId = std::stoi(arg_vec[2]); //stoi превращает строку в число, например строку пользователя '3' мы делаем в 3.
+        return DoneArguments{TaskId};
+    }
     throw std::invalid_argument("Unknown command: "+ command);//если ни одно условие не подошло значит команда неизвестна
 }
 
