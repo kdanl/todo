@@ -23,6 +23,9 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
             else if constexpr (std::is_same_v<CmdType,DoneArguments>) {
                 std::cout<<"DONE command selected, id = "<<cmd.id<<'\n';
             }
+            else if constexpr (std::is_same_v<CmdType,AddArguments>) {
+                std::cout<<"ADD command selected, title = "<<cmd.title<<'\n';
+            }
         },command);//применить лямбда функцию к комманд
     } catch (const std::exception& err) {
         Terminal::print_error(err.what());
