@@ -24,4 +24,5 @@ add_executable(todo src/main.cpp
         tests/TaskTests.cpp
         tests/RepositoryTests.cpp
         tests/ParserTests.cpp
+        src/cli/terminal.hpp
 )
