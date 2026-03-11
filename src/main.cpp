@@ -18,7 +18,19 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
                 std::cout<<"ДОБАВИТЬ ПОЗЖЕ\n";
             }
             else if constexpr (std::is_same_v<CmdType,ListArguments>) {
-                std::cout<<"ДОБАВИТЬ ПОЗЖЕ\n";
+                std::cout<<"LIST command selected\n";
+                if (cmd.ifDone) {
+                    std::cout<<"filter: done tasks\n";
+                }
+                if (cmd.ifUndone) {
+                    std::cout<<"filter: undone tasks\n";
+                }
+                if (cmd.priorityFilter) { //Проверяем, был ли указан фильтр по priority. это optional, сначала надо проверить,есть ли в нём значение
+                    std::cout<<"priority filter = "<<*cmd.priorityFilter<<"\n";
+                }
+                if (cmd.sortFilter) { // Проверяем, был ли указан способ сортировки
+                    std::cout<<"sort by = "<<*cmd.sortFilter<<"\n";
+                }
             }
             else if constexpr (std::is_same_v<CmdType,DoneArguments>) {
                 std::cout<<"DONE command selected, id = "<<cmd.id<<'\n';
