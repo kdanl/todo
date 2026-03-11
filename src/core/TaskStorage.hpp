@@ -1,0 +1,15 @@
+#ifndef TASKSTORAGE_HPP
+#define TASKSTORAGE_HPP
+#include <memory>
+#include <vector>
+#include "Task.hpp"
+class TaskStorage{
+private:
+    std::vector<std::unique_ptr<Task>> tasks_;
+public:
+    void addTask(std::unique_ptr<Task> task);
+    Task* findById(int id) const;
+    bool removeTask(int id);
+    const std::vector<std::unique_ptr<Task>>& getTasks() const;
+};
+#endif
