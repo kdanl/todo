@@ -25,6 +25,15 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
             }
             else if constexpr (std::is_same_v<CmdType,AddArguments>) {
                 std::cout<<"ADD command selected, title = "<<cmd.title<<'\n';
+                if (cmd.priority) {
+                    std::cout<<"priority = "<<*cmd.priority<<'\n';//разыменовываю optional
+                }
+                if (cmd.deadline) {
+                    std::cout<<"deadline = "<<*cmd.deadline<<'\n';
+                }
+            }
+            else if constexpr (std::is_same_v<CmdType,SearchArguments>) {
+                std::cout<<"SEARCH command selected, name = "<<cmd.word<<'\n';
             }
         },command);//применить лямбда функцию к комманд
     } catch (const std::exception& err) {

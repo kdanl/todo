@@ -28,8 +28,38 @@ UnderstandCommand ArgumentParser::parse(int arg_quant, char *arg_vec[]) const {
             throw std::invalid_argument("No task title");
         }
         std::string TaskTitle = arg_vec[2];
-        return AddArguments{TaskTitle};
+        std::optional<std::string> priority; //либо пустой либо содержит значения
+        std::optional<std::string> deadline;
+        for (int i=3;i<arg_quant;i++) { //читаем все что идет после имени таска
+            std::string arg = arg_vec[i];
+            if (arg=="--priority") {
+                if (i+1>=arg_quant) {
+                    throw std::invalid_argument("No value for priority");
+                }
+                priority = arg_vec[i+1]; //pапоминаем значение приорити
+                i++;//пропускаем дату, i++ вручную пропускает значение, которое уже использовано(например high)
+            }
+            else if (arg=="--deadline"){
+                if (i+1>=arg_quant) {
+                    throw std::invalid_argument("No value for deadline");
+                }
+                deadline=arg_vec[i+1];
+                i++;
+            }
+            else {
+                throw std::invalid_argument("Unknown flag: " + arg);//пользователь ввел неподходящую команду
+            }
+        }
+        return AddArguments{TaskTitle,priority,deadline};
+    }
+    if (command=="search") {
+        if (arg_quant<3) {
+            throw std::invalid_argument("No value for search");
+        }
+        std::string FindWord = arg_vec[2];
+        return SearchArguments{FindWord};
     }
     throw std::invalid_argument("Unknown command: "+ command);//если ни одно условие не подошло значит команда неизвестна
+
 }
 
