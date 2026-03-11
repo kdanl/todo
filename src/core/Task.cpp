@@ -18,3 +18,6 @@ void Task::markDone() {
 void Task::markUndone() {
     complete_ = false;
 }
+void Task::setTitle(const std::string &title) {
+    title_ = title;
+}
