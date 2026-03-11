@@ -11,5 +11,8 @@ public:
     Task* findById(int id) const;
     bool removeTask(int id);
     const std::vector<std::unique_ptr<Task>>& getTasks() const;
+    std::vector<Task*> findByTitle(const std::string& keyword) const;
+    int getTaskCount() const;
+    int getCompletedCount() const;
 };
 #endif
