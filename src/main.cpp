@@ -1,5 +1,6 @@
 #include "cli/ArgumentParser.hpp"
 #include "utils/Terminal.hpp"
+#include "storage/JsonFileStorage.hpp" // дэниел
 #include <exception>
 #include <iostream>
 #include <type_traits>
@@ -9,7 +10,11 @@
 int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргументов передано, argvec сами аргументы
     try { //внутри этого блока может случиться ошибка (исключение),и тогда мы обработаем её в catch
         ArgumentParser parser; //Создаём объект parser класса ArgumentParser
+        JsonFileStorage fileStorage; // дэниел
         TaskStorage storage;
+
+        storage.setTasks(fileStorage.load()); // дэниел
+
         UnderstandCommand command = parser.parse(arg_quant,arg_vec);//просим разобрать то что написал пользователь и получаем variant с одной из комманд
 
         std::visit([&storage](const auto& cmd){ //лямбда функция, cmd это текущая команда, но ее тип пока что неизвестен,поэтому визит поможет определить что это из HelpArgs, StatsArgs, ListArgs и т.д.
@@ -97,6 +102,8 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
             }
 
         },command); //применить лямбда функцию к комманд
+
+        fileStorage.save(storage.getTasks()); // дэниел
 
     } catch (const std::exception& err) {
         Terminal::print_error(err.what());
