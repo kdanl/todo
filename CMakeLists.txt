@@ -12,7 +12,9 @@ add_executable(todo src/main.cpp
         src/cli/ListCommand.hpp
         src/cli/DoneCommand.hpp
         src/core/Task.hpp
+        src/core/Task.cpp
         src/core/SimpleTask.hpp
+        src/core/SimpleTask.cpp
         src/core/DeadlineTask.hpp
         src/core/RecurringTask.hpp
         src/core/TaskRepository.hpp
