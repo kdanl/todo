@@ -9,9 +9,9 @@ void DeadlineTask::setDeadline(const std::string& deadline) {
     deadline_ = deadline;
 }
 std::string DeadlineTask::getType() const {
-    return "deadline";
+    return "Deadline";
 }
 std::string DeadlineTask::toString() const {
     std::string status = complete_ ? "[✓] " : "[ ] ";
-    return status + getTitle() + " (deadline: " + deadline_ + ")";
+    return status + getTitle() + " (eadline: " + deadline_ + ")";
 }
