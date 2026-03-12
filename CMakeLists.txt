@@ -14,8 +14,8 @@ add_executable(todo src/main.cpp
         src/core/Task.hpp
         src/core/SimpleTask.hpp
         src/core/DeadlineTask.hpp
-        src/core/RecurringTask.hpp
-        src/core/TaskRepository.hpp
+        src/core/RepeatingTask.hpp
+        src/core/RepeatingTask.hpp
         src/storage/Storage.hpp
         src/storage/JsonFileStorage.hpp
         src/storage/JsonFileStorage.cpp
@@ -25,4 +25,6 @@ add_executable(todo src/main.cpp
         tests/RepositoryTests.cpp
         tests/ParserTests.cpp
         src/cli/terminal.hpp
+        src/core/DeadlineTask.cpp
+        src/core/Task.cpp
 )
