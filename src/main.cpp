@@ -4,6 +4,8 @@
 #include <iostream>
 #include <type_traits>
 #include <variant>
+
+#include "core/DeadlineTask.hpp"
 #include "core/TaskStorage.hpp"
 
 int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргументов передано, argvec сами аргументы
@@ -63,7 +65,13 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
             }
 
             else if constexpr (std::is_same_v<CmdType,AddArguments>) {
+                int newId = storage.getTaskCount() + 1;
+                if (cmd.deadline) {
+                    storage.addTask(std::make_unique<<DeadlineTask>(newId,cmd.title,*cmd.deadline));
+                }
+                else {
 
+                }
                 std::cout << Terminal::MAGENTA << "ADD" << Terminal::RESET<< " command selected\n";
 
                 std::cout << Terminal::BRIGHT_CYAN << "title = " << Terminal::RESET<< cmd.title << '\n';
