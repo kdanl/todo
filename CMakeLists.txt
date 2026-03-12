@@ -14,10 +14,12 @@ add_executable(todo
         src/cli/ListCommand.hpp
         src/cli/DoneCommand.hpp
         src/core/Task.hpp
+        src/core/Task.cpp
         src/core/SimpleTask.hpp
+        src/core/SimpleTask.cpp
         src/core/DeadlineTask.hpp
-        src/core/RepeatingTask.hpp
-        src/core/RepeatingTask.hpp
+        src/core/RecurringTask.hpp
+        src/core/TaskRepository.hpp
         src/storage/Storage.hpp
         src/storage/JsonFileStorage.hpp
         src/storage/JsonFileStorage.cpp

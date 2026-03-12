@@ -5,11 +5,15 @@
 
 class Task;
 
+using TaskPtr  = std::unique_ptr<Task>;
+using TaskList = std::vector<TaskPtr>;
+
+
 class Storage {
 public:
     virtual ~Storage() = default;
 
     virtual void save(const std::vector<std::unique_ptr<Task>>& tasks) = 0;
 
-    virtual std::vector<std::unique_ptr<Task>> load() = 0;
+    virtual TaskList load() = 0;
 };
