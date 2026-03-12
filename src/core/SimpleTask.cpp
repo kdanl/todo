@@ -7,7 +7,7 @@ std::string SimpleTask::toString() const{
     } else {
         state = "[х]";
     }
-    return status + " ID: "+std::to_string(id_)+" | "+ title_ +" | type: Simple";
+    return state + " ID: "+std::to_string(id_)+" | "+ title_ +" | type: Simple";
 }
 std::string SimpleTask::getType() const{
     return "Simple";
