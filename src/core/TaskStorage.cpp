@@ -40,3 +40,11 @@ bool TaskStorage::removeTask(int id) {
 const std::vector<std::unique_ptr<Task>>& TaskStorage::getTasks() const {
     return tasks_;
 }
+int TaskStorage::getProgressPercentage() const {
+    int tasks_count = getTaskCount();
+    if (tasks_count == 0) {
+        return 0;
+    }
+    int complete = getCompletedCount();
+    return complete *100 /tasks_count;
+}
