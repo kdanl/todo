@@ -5,5 +5,5 @@
 namespace Constants {
     inline constexpr std::string_view DefaultStorageFile = "tasks.json"; // Файл хранения задач по умолчанию
 
-    inline constexpr std::string_view DateFormat = "DD-MM-YYY"; // Формат даты для дедлайнов
+    inline constexpr std::string_view DateFormat = "DD-MM-YYYY"; // Формат даты для дедлайнов
 }
