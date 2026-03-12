@@ -18,6 +18,7 @@ add_executable(todo
         src/core/SimpleTask.hpp
         src/core/SimpleTask.cpp
         src/core/DeadlineTask.hpp
+        src/core/DeadlineTask.cpp
         src/core/RecurringTask.hpp
         src/core/TaskRepository.hpp
         src/storage/Storage.hpp
@@ -29,8 +30,6 @@ add_executable(todo
         tests/RepositoryTests.cpp
         tests/ParserTests.cpp
         src/cli/terminal.hpp
-        src/core/DeadlineTask.cpp
-        src/core/Task.cpp
 )
 
 target_include_directories(todo PRIVATE src)
