@@ -10,5 +10,7 @@ public:
     RepeatingTask(int id,const std::string& title,const std::string& frequency,const std::string& timeOfDay);
     std::string getType() const override;
     std::string toString() const override;
+    const std::string& getFrequency() const;
+    const std::string& getTimeOfDay()const;
 };
 #endif
