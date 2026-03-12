@@ -1,5 +1,7 @@
 #include "JsonFileStorage.hpp"
 
+#include "../core/DeadlineTask.hpp"
+#include "../core/RepeatingTask.hpp"
 #include "../core/SimpleTask.hpp"
 #include "../core/Task.hpp"
 #include "../utils/Exceptions.hpp"
@@ -155,11 +157,31 @@ void JsonFileStorage::save(const std::vector<std::unique_ptr<Task>>& tasks) {
             << "\"id\": " << t.getId() << ", "
             << "\"title\": \"" << escape_json(t.getTitle()) << "\", "
             << "\"done\": " << (t.isComplete() ? "true" : "false") << ", "
-            << "\"type\": \"" << escape_json(t.getType()) << "\""
-            << "}";
-        if (i + 1 < tasks.size()) out << ",";
+            << "\"type\": \"" << escape_json(t.getType()) << "\"";
+        if (t.getType() == "Repeating") {
+            const auto& rt = static_cast<const RepeatingTask&>(t);
+
+            out << ", "
+                << "\"frequency\": " << escape_json(rt.getFrequency()) << "\", "
+                << "\"timeOfDay\": \"" << escape_json(rt.getTimeOfDay()) << "\"";
+        }
+
+        if (t.getType() == "Deadline") {
+            const auto& rt = static_cast<const DeadlineTask&>(t);
+
+            out << ", "
+                << "\"deadline\":\"" << escape_json(rt.getDeadline()) << "\"";
+        }
+
+        out << "}";
+
+        if (i+1 < tasks.size()) {
+            out << ",";
+        }
+
         out << "\n";
     }
+
     out << "  ]\n}\n";
 
     if (!out.good()) {
@@ -186,16 +208,54 @@ std::vector<std::unique_ptr<Task>> JsonFileStorage::load() {
         auto id = parse_int_field(obj, "id");
         auto title = parse_string_field(obj, "title");
         auto done = parse_bool_field(obj, "done");
+        auto type = parse_string_field(obj, "type");
 
-        if (!id || !title || !done) {
+        if (!id || !title || !done || !type) {
             throw StorageError("Invalid task object in storage file: " + filePath_);
         }
 
-        auto task = std::make_unique<SimpleTask>(*id, *title);
-        if (*done) task->markDone();
+        std::unique_ptr<Task> task;
+
+        if (*type == "simple") {
+            task = std::make_unique<SimpleTask>(*id, *title);
+        }
+        else if (*type == "repeating") {
+
+            auto frequency = parse_string_field(obj, "frequency");
+            auto timeOfDay = parse_string_field(obj, "timeOfDay");
+
+            if (!frequency || !timeOfDay) {
+                throw StorageError("Invalid repeating task in storage file: " + filePath_);
+            }
+
+            task = std::make_unique<RepeatingTask>(
+                *id,
+                *title,
+                *frequency,
+                *timeOfDay
+            );
+        }
+        else if (*type == "deadline") {
+            auto deadline = parse_string_field(obj, "deadline");
+            if (!deadline) {
+                throw StorageError("Invalid deadline task in storage file: " + filePath_);
+            }
+            task = std::make_unique<DeadlineTask>(
+                *id,
+                *title,
+                *deadline
+            );
+        }
+        else {
+            throw StorageError("Unknown task type: " + *type);
+        }
+
+        if (*done) {
+            task->markDone();
+        }
+
         tasks.push_back(std::move(task));
     }
 
     return tasks;
 }
-
