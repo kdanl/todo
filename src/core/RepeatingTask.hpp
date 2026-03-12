@@ -7,7 +7,7 @@ private:
     std::string frequency_;
     std::string timeOfDay_;
 public:
-    RepeatingTask(int id, const std::string& title, const std::string& frequency, const std::string& timeOfDay, int priority);
+    RepeatingTask(int id, const std::string& title, const std::string& frequency, const std::string& timeOfDay, Priority priority);
     std::string getType() const override;
     std::string toString() const override;
     const std::string& getFrequency() const;
