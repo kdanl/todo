@@ -1,6 +1,12 @@
 #include "RepeatingTask.hpp"
-RepeatingTask::RepeatingTask(int id,const std::string& title,const std::string& frequency,const std::string& timeOfDay)
-    : Task(id, title), frequency_(frequency), timeOfDay_(timeOfDay) {}
+RepeatingTask::RepeatingTask(int id,
+                             const std::string& title,
+                             const std::string& frequency,
+                             const std::string& timeOfDay,
+                             int priority)
+    : Task(id, title, priority),
+      frequency_(frequency),
+      timeOfDay_(timeOfDay) {}
 std::string RepeatingTask::getType() const {
     return "Repeating";
 }
@@ -9,9 +15,11 @@ std::string RepeatingTask::toString() const {
     if (complete_) {
         state = "[✓]";
     } else {
-        state = "[x]";
+        state = "[ ]";
     }
-    return state + " " + title_+ " (" + frequency_ + " at " + timeOfDay_ + ")";
+    return state + " " + title_
+        + " (" + frequency_ + " at " + timeOfDay_
+        + ", priority: " + std::to_string(priority_) + ")";
 }
 const std::string &RepeatingTask::getFrequency() const {
     return frequency_;
