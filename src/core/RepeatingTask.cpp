@@ -13,3 +13,9 @@ std::string RepeatingTask::toString() const {
     }
     return state + " " + title_+ " (" + frequency_ + " at " + timeOfDay_ + ")";
 }
+const std::string &RepeatingTask::getFrequency() const {
+    return frequency_;
+}
+const std::string &RepeatingTask::getTimeOfDay() const {
+    return timeOfDay_;
+}
