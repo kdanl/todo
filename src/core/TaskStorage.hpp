@@ -2,6 +2,7 @@
 #define TASKSTORAGE_HPP
 #include <memory>
 #include <vector>
+#include <optional>
 #include "Task.hpp"
 class TaskStorage{
 private:
