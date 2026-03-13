@@ -2,6 +2,7 @@
 #define TASKSTORAGE_HPP
 #include <memory>
 #include <vector>
+#include <optional>
 #include "Task.hpp"
 class TaskStorage{
 private:
@@ -14,6 +15,7 @@ public:
     std::vector<Task*> findByTitle(const std::string& keyword) const;
     int getTaskCount() const;
     int getCompletedCount() const;
-    int getProgressPercentage()const;
+    std::optional<int> getProgressPercentage()const;
+    void sortByPriority();
 };
 #endif
