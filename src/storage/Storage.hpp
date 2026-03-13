@@ -5,7 +5,7 @@
 
 class Task;
 
-using TaskPtr  = std::shared_ptr<Task>;
+using TaskPtr  = std::unique_ptr<Task>;
 using TaskList = std::vector<TaskPtr>;
 
 
