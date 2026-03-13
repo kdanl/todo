@@ -5,7 +5,10 @@
 #include <iostream>
 #include <type_traits>
 #include <variant>
-
+#include "core/SimpleTask.hpp" // Anna
+#include "core/DeadlineTask.hpp" // Anna
+#include <memory>
+#include <vector>
 
 int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргументов передано, argvec сами аргументы
     try { //внутри этого блока может случиться ошибка (исключение),и тогда мы обработаем её в catch
@@ -24,81 +27,113 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
             if constexpr (std::is_same_v<CmdType,HelpArguments>) { //CmdType это тип известный только на этапе компиляции поэтому constexpr
                 Terminal::print_help();
             }
+            else if constexpr (std::is_same_v<CmdType,StatsArguments>) { // Anna
 
-            else if constexpr (std::is_same_v<CmdType,StatsArguments>) {
+                int total = storage.getTaskCount();
+                int completed = storage.getCompletedCount();
+                auto percent = storage.getProgressPercentage();
 
+                std::cout << Terminal::MAGENTA << "STATS" << Terminal::RESET
+                          << " command selected\n";
 
-                std::cout << Terminal::MAGENTA << "STATS" << Terminal::RESET << " command selected\n";
+                std::cout << Terminal::BRIGHT_CYAN << "total tasks = " << Terminal::RESET
+                          << total << "\n";
 
-                std::cout << Terminal::BRIGHT_CYAN << "total tasks = " << Terminal::RESET<< total << "\n";
+                std::cout << Terminal::BRIGHT_CYAN << "completed tasks = " << Terminal::RESET
+                          << completed << "\n";
 
-                std::cout << Terminal::BRIGHT_CYAN << "completed tasks = " << Terminal::RESET<< completed << "\n";
-
-                std::cout << Terminal::BRIGHT_CYAN << "progress = " << Terminal::RESET<< completed << "/" << total << " (" << percent << "%)\n";
-            }
-
-            else if constexpr (std::is_same_v<CmdType,ListArguments>) {
-
-                std::cout << Terminal::MAGENTA << "LIST" << Terminal::RESET<< " command selected\n";
-
-                if (cmd.ifDone) {
-                    std::cout << Terminal::BRIGHT_CYAN << "filter = " << Terminal::RESET<< "done tasks\n";
-                }
-
-                if (cmd.ifUndone) {
-                    std::cout << Terminal::BRIGHT_CYAN << "filter = " << Terminal::RESET<< "undone tasks\n";
-                }
-
-                if (cmd.priorityFilter) { //Проверяем, был ли указан фильтр по priority. это optional, сначала надо проверить,есть ли в нём значение
-                    std::cout << Terminal::BRIGHT_CYAN << "priority filter = " << Terminal::RESET<< *cmd.priorityFilter << "\n";
-                }
-
-                if (cmd.sortFilter) { // Проверяем, был ли указан способ сортировки
-                    std::cout << Terminal::BRIGHT_CYAN << "sort by = " << Terminal::RESET<< *cmd.sortFilter << "\n";
+                if (percent.has_value()) {
+                    std::cout << Terminal::BRIGHT_CYAN << "progress = " << Terminal::RESET
+                              << completed << "/" << total << " (" << percent.value() << "%)\n";
+                } else {
+                    std::cout << Terminal::BRIGHT_CYAN << "progress = " << Terminal::RESET
+                              << "No tasks yet\n";
                 }
             }
 
-            else if constexpr (std::is_same_v<CmdType,DoneArguments>) {
+            else if constexpr (std::is_same_v<CmdType,ListArguments>) { //Anna
 
-                std::cout << Terminal::MAGENTA << "DONE" << Terminal::RESET<< " command selected\n";
+                std::cout << Terminal::MAGENTA << "LIST" << Terminal::RESET
+                          << " command selected\n";
 
-                std::cout << Terminal::BRIGHT_CYAN << "id = " << Terminal::RESET<< cmd.id << '\n';
+                if (cmd.sort) {
+                    storage.sortByPriority();
+                }
+
+                const auto& tasks = storage.getTasks();
+
+                for (const auto& task : tasks) {
+
+                    if (cmd.ifDone && !task->isComplete()) {
+                        continue;
+                    }
+
+                    if (cmd.ifUndone && task->isComplete()) {
+                        continue;
+                    }
+
+                    std::cout << task->toString() << "\n";
+                }
             }
 
-            else if constexpr (std::is_same_v<CmdType,AddArguments>) {
-                std::cout << Terminal::MAGENTA << "ADD" << Terminal::RESET<< " command selected\n";
+            else if constexpr (std::is_same_v<CmdType,DoneArguments>) { //Anna
 
-                std::cout << Terminal::BRIGHT_CYAN << "title = " << Terminal::RESET<< cmd.title << '\n';
+                Task* task = storage.findById(cmd.id);
+
+                if (!task) {
+                    throw std::invalid_argument("Task not found");
+                }
+
+                task->markDone();
+
+                std::cout << Terminal::MAGENTA << "DONE" << Terminal::RESET
+                          << " command selected\n";
+
+                std::cout << Terminal::BRIGHT_CYAN << "id = " << Terminal::RESET
+                          << cmd.id << '\n';
+            }
+
+            else if constexpr (std::is_same_v<CmdType,AddArguments>) { //Anna
+
+                int newId = storage.getTaskCount() + 1;
+                Priority p = Priority::Low;
 
                 if (cmd.priority) {
-
-                    if (*cmd.priority=="high") {
-                        std::cout << Terminal::BRIGHT_CYAN << "priority = " << Terminal::RESET<< Terminal::RED << *cmd.priority << Terminal::RESET << "\n";
-                    }
-
-                    else if (*cmd.priority=="medium") {
-                        std::cout << Terminal::BRIGHT_CYAN << "priority = " << Terminal::RESET<< Terminal::YELLOW << *cmd.priority << Terminal::RESET << "\n";
-                    }
-
-                    else if (*cmd.priority=="low") {
-                        std::cout << Terminal::BRIGHT_CYAN << "priority = " << Terminal::RESET<< Terminal::GREEN << *cmd.priority << Terminal::RESET << "\n";
-                    }
-
-                    else {
-                        std::cout << Terminal::BRIGHT_CYAN << "priority = " << Terminal::RESET<< *cmd.priority << "\n";
-                    }
+                    p = priorityFromString(*cmd.priority);
                 }
 
                 if (cmd.deadline) {
-                    std::cout << Terminal::BRIGHT_CYAN << "deadline = " << Terminal::RESET<< *cmd.deadline << '\n';
+                    storage.addTask(std::make_unique<DeadlineTask>(newId, cmd.title, *cmd.deadline, p));
+                }
+                else {
+                    storage.addTask(std::make_unique<SimpleTask>(newId, cmd.title, p));
+                }
+
+                std::cout << Terminal::MAGENTA << "ADD" << Terminal::RESET
+                          << " command selected\n";
+
+                std::cout << Terminal::BRIGHT_CYAN << "title = " << Terminal::RESET
+                          << cmd.title << '\n';
+
+                if (cmd.deadline) {
+                    std::cout << Terminal::BRIGHT_CYAN << "deadline = " << Terminal::RESET
+                              << *cmd.deadline << '\n';
                 }
             }
 
-            else if constexpr (std::is_same_v<CmdType,SearchArguments>) {
+            else if constexpr (std::is_same_v<CmdType,SearchArguments>) { //Anna
 
-                std::cout << Terminal::MAGENTA << "SEARCH" << Terminal::RESET<< " command selected\n";
+                std::cout << Terminal::MAGENTA << "SEARCH" << Terminal::RESET
+                          << " command selected\n";
 
-                std::cout << Terminal::BRIGHT_CYAN << "word = " << Terminal::RESET<< cmd.word << '\n';
+                std::cout << Terminal::BRIGHT_CYAN << "word = " << Terminal::RESET
+                          << cmd.word << '\n';
+
+                std::vector<Task*> results = storage.findByTitle(cmd.word);
+
+                for (Task* task : results) {
+                    std::cout << task->toString() << "\n";
+                }
             }
 
         },command); //применить лямбда функцию к комманд
