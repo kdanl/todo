@@ -1,5 +1,7 @@
 add_executable(todo_tests
         JsonFileStorageTests.cpp
+        CoreTests.cpp
+        CLITests.cpp
 
         ../src/core/Task.cpp
         ../src/core/SimpleTask.cpp
@@ -10,6 +12,8 @@ add_executable(todo_tests
         ../src/storage/JsonFileStorage.cpp
 
         ../src/utils/DateUtils.cpp
+
+        ../src/cli/ArgumentParser.cpp
 )
 
 target_include_directories(todo_tests

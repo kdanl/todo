@@ -4,8 +4,8 @@
 
 #include "core/SimpleTask.hpp" // Anna
 #include "core/DeadlineTask.hpp" // Anna
-#include "core/RepeatingTask.hpp"//Anna
-#include "core/TaskStorage.hpp"//Daniel
+#include "core/RepeatingTask.hpp"
+#include "core/TaskStorage.hpp"
 
 #include <exception>
 #include <iostream>
@@ -18,16 +18,16 @@
 int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргументов передано, argvec сами аргументы
     try { //внутри этого блока может случиться ошибка (исключение),и тогда мы обработаем её в catch
         ArgumentParser parser; //Создаём объект parser класса ArgumentParser
-        JsonFileStorage fileStorage; //Daniel
-        TaskStorage storage;//Anna
+        JsonFileStorage fileStorage; // дэниел
+        TaskStorage storage;
 
-        auto tasks = fileStorage.load();//Anna
+        auto tasks = fileStorage.load();
 
 
-        for (auto& t : tasks) {//Anna
-            storage.addTask(std::move(t));//Anna
+        for (auto& t : tasks) {
+            storage.addTask(std::move(t));
         }
-        storage.updateRepeatingTasks(); //Anna проверяем repeating задачи по времени
+        storage.updateRepeatingTasks(); // проверяем repeating задачи по времени
 
         storage.updateRepeatingTasks();
         UnderstandCommand command = parser.parse(arg_quant,arg_vec);//просим разобрать то что написал пользователь и получаем variant с одной из комманд
@@ -39,11 +39,11 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
             if constexpr (std::is_same_v<CmdType,HelpArguments>) { //CmdType это тип известный только на этапе компиляции поэтому constexpr
                 Terminal::print_help();
             }
-            else if constexpr (std::is_same_v<CmdType,StatsArguments>) {
+            else if constexpr (std::is_same_v<CmdType,StatsArguments>) { // Anna
 
-                int total = storage.getTaskCount();//Anna
-                int completed = storage.getCompletedCount();//Anna
-                auto percent = storage.getProgressPercentage();//Anna
+                int total = storage.getTaskCount();
+                int completed = storage.getCompletedCount();
+                auto percent = storage.getProgressPercentage();
 
                 std::cout << Terminal::MAGENTA << "STATS" << Terminal::RESET
                           << " command selected\n";
@@ -63,40 +63,40 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
                 }
             }
 
-            else if constexpr (std::is_same_v<CmdType,ListArguments>) {
+            else if constexpr (std::is_same_v<CmdType,ListArguments>) { //Anna
 
                 std::cout << Terminal::MAGENTA << "LIST" << Terminal::RESET
                           << " command selected\n";
 
                 if (cmd.sortFilter) {
-                    storage.sortByPriority();//Anna
+                    storage.sortByPriority();
                 }
 
-                const auto& tasks = storage.getTasks();//Anna
+                const auto& tasks = storage.getTasks();
 
-                for (const auto& task : tasks) {//Anna
+                for (const auto& task : tasks) {
 
-                    if (cmd.ifDone && !task->isComplete()) {//Anna
-                        continue;//Anna
+                    if (cmd.ifDone && !task->isComplete()) {
+                        continue;
                     }
 
-                    if (cmd.ifUndone && task->isComplete()) {//Anna
-                        continue;//Anna
+                    if (cmd.ifUndone && task->isComplete()) {
+                        continue;
                     }
 
-                    std::cout << task->toString() << "\n";//Anna
+                    std::cout << task->toString() << "\n";
                 }
             }
 
-            else if constexpr (std::is_same_v<CmdType,DoneArguments>) {
+            else if constexpr (std::is_same_v<CmdType,DoneArguments>) { //Anna
 
-                Task* task = storage.findById(cmd.id);//Anna
+                Task* task = storage.findById(cmd.id);
 
                 if (!task) {
                     throw std::invalid_argument("Task not found");
                 }
 
-                task->markDone();//Anna
+                task->markDone();
 
                 std::cout << Terminal::MAGENTA << "DONE" << Terminal::RESET
                           << " command selected\n";
@@ -105,23 +105,23 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
                           << cmd.id << '\n';
             }
 
-            else if constexpr (std::is_same_v<CmdType,AddArguments>) {
+            else if constexpr (std::is_same_v<CmdType,AddArguments>) { //Anna
 
-                int newId = storage.getTaskCount() + 1;//Anna
-                Priority p = Priority::Low;//Anna
+                int newId = storage.getTaskCount() + 1;
+                Priority p = Priority::Low;
 
                 if (cmd.priority) {
-                    p = priorityFromString(*cmd.priority);//Anna
+                    p = priorityFromString(*cmd.priority);
                 }
 
                 if (cmd.repeat) {
 
-                    storage.addTask(//Anna
-                        std::make_unique<RepeatingTask>(//Anna
-                            newId,//Anna
-                            cmd.title,//Anna
-                            *cmd.repeat,//Anna
-                            *cmd.timeOfDay,//Anna
+                    storage.addTask(
+                        std::make_unique<RepeatingTask>(
+                            newId,
+                            cmd.title,
+                            *cmd.repeat,
+                            *cmd.timeOfDay,
                             p
                         )
                     );
@@ -129,11 +129,11 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
 
                 else if (cmd.deadline) {
 
-                    storage.addTask(//Anna
-                        std::make_unique<DeadlineTask>(//Anna
-                            newId,//Anna
-                            cmd.title,//Anna
-                            *cmd.deadline,//Anna
+                    storage.addTask(
+                        std::make_unique<DeadlineTask>(
+                            newId,
+                            cmd.title,
+                            *cmd.deadline,
                             p
                         )
                     );
