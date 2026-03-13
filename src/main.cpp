@@ -5,10 +5,17 @@
 #include <iostream>
 #include <type_traits>
 #include <variant>
+<<<<<<< HEAD
 #include "core/SimpleTask.hpp" // Anna
 #include "core/DeadlineTask.hpp" // Anna
 #include <memory>
 #include <vector>
+=======
+#include "core/TaskStorage.hpp"
+
+
+
+>>>>>>> 76b2887 (Update CMake configuration and improve main CLI)
 
 int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргументов передано, argvec сами аргументы
     try { //внутри этого блока может случиться ошибка (исключение),и тогда мы обработаем её в catch
