@@ -22,3 +22,19 @@ add_executable(todo
 )
 
 target_include_directories(todo PRIVATE src)
+
+# ---------- Google Tests ----------
+
+include(FetchContent)
+
+FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+
+FetchContent_MakeAvailable(googletest)
+
+enable_testing()
+
+add_subdirectory(tests)
