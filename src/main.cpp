@@ -3,9 +3,9 @@
 #include "storage/JsonFileStorage.hpp" // дэниел
 
 #include "core/SimpleTask.hpp" // Anna
-#include "core/DeadlineTask.hpp" // Anna
-#include "core/RepeatingTask.hpp"
-#include "core/TaskStorage.hpp"
+#include "core/DeadlineTask.hpp" //Elina
+#include "core/RepeatingTask.hpp"//Anna
+#include "core/TaskStorage.hpp"//Anna
 
 #include <exception>
 #include <iostream>
@@ -18,18 +18,18 @@
 int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргументов передано, argvec сами аргументы
     try { //внутри этого блока может случиться ошибка (исключение),и тогда мы обработаем её в catch
         ArgumentParser parser; //Создаём объект parser класса ArgumentParser
-        JsonFileStorage fileStorage; // дэниел
-        TaskStorage storage;
+        JsonFileStorage fileStorage; //Daniel
+        TaskStorage storage;//Anna
 
-        auto tasks = fileStorage.load();
+        auto tasks = fileStorage.load();//Anna
 
 
-        for (auto& t : tasks) {
-            storage.addTask(std::move(t));
+        for (auto& t : tasks) {//Anna
+            storage.addTask(std::move(t));//Anna
         }
-        storage.updateRepeatingTasks(); // проверяем repeating задачи по времени
+        storage.updateRepeatingTasks(); //Anna проверяем repeating задачи по времени
 
-        storage.updateRepeatingTasks();
+        storage.updateRepeatingTasks();//Anna
         UnderstandCommand command = parser.parse(arg_quant,arg_vec);//просим разобрать то что написал пользователь и получаем variant с одной из комманд
 
         std::visit([&storage](const auto& cmd){ //лямбда функция, cmd это текущая команда, но ее тип пока что неизвестен,поэтому визит поможет определить что это из HelpArgs, StatsArgs, ListArgs и т.д.
@@ -39,11 +39,11 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
             if constexpr (std::is_same_v<CmdType,HelpArguments>) { //CmdType это тип известный только на этапе компиляции поэтому constexpr
                 Terminal::print_help();
             }
-            else if constexpr (std::is_same_v<CmdType,StatsArguments>) { // Anna
+            else if constexpr (std::is_same_v<CmdType,StatsArguments>) {
 
-                int total = storage.getTaskCount();
-                int completed = storage.getCompletedCount();
-                auto percent = storage.getProgressPercentage();
+                int total = storage.getTaskCount();//Anna
+                int completed = storage.getCompletedCount();//Anna
+                auto percent = storage.getProgressPercentage();//Anna
 
                 std::cout << Terminal::MAGENTA << "STATS" << Terminal::RESET
                           << " command selected\n";
@@ -63,106 +63,102 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
                 }
             }
 
-            else if constexpr (std::is_same_v<CmdType,ListArguments>) { //Anna
+            else if constexpr (std::is_same_v<CmdType,ListArguments>) {
 
                 std::cout << Terminal::MAGENTA << "LIST" << Terminal::RESET
                           << " command selected\n";
 
-                if (cmd.sortFilter) {
-                    storage.sortByPriority();
+                if (cmd.sortFilter) {//Anna
+                    storage.sortByPriority();//Anna
                 }
 
-                const auto& tasks = storage.getTasks();
+                const auto& tasks = storage.getTasks();//Anna
 
-                for (const auto& task : tasks) {
+                for (const auto& task : tasks) {//Anna
 
-                    if (cmd.ifDone && !task->isComplete()) {
-                        continue;
+                    if (cmd.ifDone && !task->isComplete()) {//Anna
+                        continue;//Anna
                     }
 
-                    if (cmd.ifUndone && task->isComplete()) {
-                        continue;
+                    if (cmd.ifUndone && task->isComplete()) {//Anna
+                        continue;//Anna
                     }
 
-                    std::cout << task->toString() << "\n";
+                    std::cout << task->toString() << "\n";//Anna
                 }
             }
 
-            else if constexpr (std::is_same_v<CmdType,DoneArguments>) { //Anna
+            else if constexpr (std::is_same_v<CmdType,DoneArguments>) { //Elina
 
-                Task* task = storage.findById(cmd.id);
+                Task* task = storage.findById(cmd.id);//Anna
 
-                if (!task) {
-                    throw std::invalid_argument("Task not found");
+                if (!task) {//Elina
+                    throw std::invalid_argument("Task not found");//Elina
                 }
 
-                task->markDone();
+                task->markDone();//Anna
 
-                std::cout << Terminal::MAGENTA << "DONE" << Terminal::RESET
-                          << " command selected\n";
+                std::cout << Terminal::MAGENTA << "DONE" << Terminal::RESET<< " command selected\n";//Elina
 
-                std::cout << Terminal::BRIGHT_CYAN << "id = " << Terminal::RESET
-                          << cmd.id << '\n';
+                std::cout << Terminal::BRIGHT_CYAN << "id = " << Terminal::RESET<< cmd.id << '\n';//Elina
             }
 
-            else if constexpr (std::is_same_v<CmdType,AddArguments>) { //Anna
+            else if constexpr (std::is_same_v<CmdType,AddArguments>) { //Elina
 
-                int newId = storage.getTaskCount() + 1;
-                Priority p = Priority::Low;
+                int newId = storage.getTaskCount() + 1;//Anna
+                Priority p = Priority::Low;//Anna
 
-                if (cmd.priority) {
-                    p = priorityFromString(*cmd.priority);
+                if (cmd.priority) {//Elina
+                    p = priorityFromString(*cmd.priority);//Anna
                 }
 
-                if (cmd.repeat) {
+                if (cmd.repeat) {//Elina
 
-                    storage.addTask(
-                        std::make_unique<RepeatingTask>(
-                            newId,
-                            cmd.title,
-                            *cmd.repeat,
-                            *cmd.timeOfDay,
-                            p
+                    storage.addTask(//Anna
+                        std::make_unique<RepeatingTask>(//Anna
+                            newId,//Anna
+                            cmd.title,//Anna
+                            *cmd.repeat,//Anna
+                            *cmd.timeOfDay,//Anna
+                            p//Anna
                         )
                     );
                 }
 
-                else if (cmd.deadline) {
+                else if (cmd.deadline) {//Elina
 
-                    storage.addTask(
-                        std::make_unique<DeadlineTask>(
-                            newId,
-                            cmd.title,
-                            *cmd.deadline,
-                            p
+                    storage.addTask(//Anna
+                        std::make_unique<DeadlineTask>(//Anna
+                            newId,//Anna
+                            cmd.title,//Anna
+                            *cmd.deadline,//Anna
+                            p//Anna
                         )
                     );
                 }
 
                 else {
 
-                    storage.addTask(
-                        std::make_unique<SimpleTask>(
-                            newId,
-                            cmd.title,
-                            p
+                    storage.addTask(//Anna
+                        std::make_unique<SimpleTask>(//Anna
+                            newId,//Anna
+                            cmd.title,//Anna
+                            p//Anna
                         )
                     );
                 }
 
-                std::cout << Terminal::MAGENTA << "ADD" << Terminal::RESET
-                          << " command selected\n";
+                std::cout << Terminal::MAGENTA << "ADD" << Terminal::RESET<< " command selected\n";
 
-                std::cout << Terminal::BRIGHT_CYAN << "title = " << Terminal::RESET
-                          << cmd.title << '\n';
+                std::cout << Terminal::BRIGHT_CYAN << "title = " << Terminal::RESET<< cmd.title << '\n';
 
-                if (cmd.deadline) {
+                if (cmd.deadline) {//Elina
                     std::cout << Terminal::BRIGHT_CYAN << "deadline = " << Terminal::RESET
                               << *cmd.deadline << '\n';
                 }
             }
 
-            else if constexpr (std::is_same_v<CmdType,SearchArguments>) { //Anna
+            else if constexpr (std::is_same_v<CmdType,SearchArguments>) { //Elina
 
                 std::cout << Terminal::MAGENTA << "SEARCH" << Terminal::RESET
                           << " command selected\n";
@@ -178,12 +174,12 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
                 }
             }
 
-        },command); //применить лямбда функцию к комманд
+        },command); //Elina применить лямбда функцию к комманд
 
-        fileStorage.save(storage.getTasks()); // дэниел
+        fileStorage.save(storage.getTasks()); //Daniel
 
-    } catch (const std::exception& err) {
-        Terminal::print_error(err.what());
+    } catch (const std::exception& err) {//Elina
+        Terminal::print_error(err.what());//Elina
         return 1;//усли возвращаем 1 это обычно означает что программа завершилась с ошибкой
     }
 
