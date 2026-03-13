@@ -1,8 +1,11 @@
 #include "TaskStorage.hpp"
+#include "RepeatingTask.hpp"
 #include <algorithm>
+
 void TaskStorage::addTask(std::unique_ptr<Task> task) {
     tasks_.push_back(std::move(task));
 }
+
 std::vector<Task*> TaskStorage::findByTitle(const std::string& keyword)const {
     std::vector<Task*> result;
     for (const auto& t : tasks_) {
@@ -11,9 +14,11 @@ std::vector<Task*> TaskStorage::findByTitle(const std::string& keyword)const {
         }
     }return result;
 }
+
 int TaskStorage::getTaskCount() const {
     return tasks_.size();
 }
+
 int TaskStorage::getCompletedCount() const {
     int kol = 0;
     for (const auto& task : tasks_) {
@@ -23,6 +28,7 @@ int TaskStorage::getCompletedCount() const {
     }
     return kol;
 }
+
 Task* TaskStorage::findById(int id) const{
     for (const auto& t : tasks_) {
         if (t->getId() == id) {
@@ -39,9 +45,11 @@ bool TaskStorage::removeTask(int id) {
         }
     }return false;
 }
+
 const std::vector<std::unique_ptr<Task>>& TaskStorage::getTasks() const {
     return tasks_;
 }
+
 void TaskStorage::sortByPriority() {
     std::sort(tasks_.begin(), tasks_.end(),
         [](const std::unique_ptr<Task>& a1, const std::unique_ptr<Task>& a2) {
@@ -49,6 +57,7 @@ void TaskStorage::sortByPriority() {
                    static_cast<int>(a2->getPriority());
         });
 }
+
 std::optional<int> TaskStorage::getProgressPercentage() const {
     int tasks_count = getTaskCount();
     if (tasks_count == 0) {
@@ -56,4 +65,19 @@ std::optional<int> TaskStorage::getProgressPercentage() const {
     }
     int complete = getCompletedCount();
     return complete *100 /tasks_count;
+}
+
+void TaskStorage::updateRepeatingTasks() {
+
+    for (auto& task : tasks_) {
+
+        if (task->getType() == "Repeating") {
+
+            auto* repeating = dynamic_cast<RepeatingTask*>(task.get());
+
+            if (repeating) {
+                repeating->updateByTime();
+            }
+        }
+    }
 }
