@@ -1,4 +1,5 @@
 #include "TaskStorage.hpp"
+#include <algorithm>
 void TaskStorage::addTask(std::unique_ptr<Task> task) {
     tasks_.push_back(std::move(task));
 }
@@ -29,6 +30,7 @@ Task* TaskStorage::findById(int id) const{
         }
     }return nullptr;
 }
+
 bool TaskStorage::removeTask(int id) {
     for (auto a = tasks_.begin(); a != tasks_.end(); ++a) {
         if ((*a)->getId() == id) {
@@ -40,10 +42,17 @@ bool TaskStorage::removeTask(int id) {
 const std::vector<std::unique_ptr<Task>>& TaskStorage::getTasks() const {
     return tasks_;
 }
-int TaskStorage::getProgressPercentage() const {
+void TaskStorage::sortByPriority() {
+    std::sort(tasks_.begin(), tasks_.end(),
+        [](const std::unique_ptr<Task>& a1, const std::unique_ptr<Task>& a2) {
+            return static_cast<int>(a1->getPriority()) >
+                   static_cast<int>(a2->getPriority());
+        });
+}
+std::optional<int> TaskStorage::getProgressPercentage() const {
     int tasks_count = getTaskCount();
     if (tasks_count == 0) {
-        return 0;
+        return std::nullopt;
     }
     int complete = getCompletedCount();
     return complete *100 /tasks_count;
