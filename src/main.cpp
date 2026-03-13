@@ -4,6 +4,7 @@
 
 #include "core/SimpleTask.hpp" // Anna
 #include "core/DeadlineTask.hpp" // Anna
+#include "core/RepeatingTask.hpp"
 #include "core/TaskStorage.hpp"
 
 #include <exception>
@@ -116,11 +117,40 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
                     p = priorityFromString(*cmd.priority);
                 }
 
-                if (cmd.deadline) {
-                    storage.addTask(std::make_unique<DeadlineTask>(newId, cmd.title, *cmd.deadline, p));
+                if (cmd.repeat) {
+
+                    storage.addTask(
+                        std::make_unique<RepeatingTask>(
+                            newId,
+                            cmd.title,
+                            *cmd.repeat,
+                            *cmd.timeOfDay,
+                            p
+                        )
+                    );
                 }
+
+                else if (cmd.deadline) {
+
+                    storage.addTask(
+                        std::make_unique<DeadlineTask>(
+                            newId,
+                            cmd.title,
+                            *cmd.deadline,
+                            p
+                        )
+                    );
+                }
+
                 else {
-                    storage.addTask(std::make_unique<SimpleTask>(newId, cmd.title, p));
+
+                    storage.addTask(
+                        std::make_unique<SimpleTask>(
+                            newId,
+                            cmd.title,
+                            p
+                        )
+                    );
                 }
 
                 std::cout << Terminal::MAGENTA << "ADD" << Terminal::RESET
