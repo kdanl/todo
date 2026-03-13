@@ -1,21 +1,18 @@
 #include "cli/ArgumentParser.hpp"
 #include "utils/Terminal.hpp"
 #include "storage/JsonFileStorage.hpp" // дэниел
+
+#include "core/SimpleTask.hpp" // Anna
+#include "core/DeadlineTask.hpp" // Anna
+#include "core/TaskStorage.hpp"
+
 #include <exception>
 #include <iostream>
 #include <type_traits>
 #include <variant>
-<<<<<<< HEAD
-#include "core/SimpleTask.hpp" // Anna
-#include "core/DeadlineTask.hpp" // Anna
-#include <memory>
-#include <vector>
-=======
-#include "core/TaskStorage.hpp"
 
 
 
->>>>>>> 76b2887 (Update CMake configuration and improve main CLI)
 
 int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргументов передано, argvec сами аргументы
     try { //внутри этого блока может случиться ошибка (исключение),и тогда мы обработаем её в catch
@@ -23,7 +20,11 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
         JsonFileStorage fileStorage; // дэниел
         TaskStorage storage;
 
-        storage.setTasks(fileStorage.load()); // дэниел
+        auto tasks = fileStorage.load();
+
+        for (auto& t : tasks) {
+            storage.addTask(std::move(t));
+        }
 
         UnderstandCommand command = parser.parse(arg_quant,arg_vec);//просим разобрать то что написал пользователь и получаем variant с одной из комманд
 
@@ -63,7 +64,7 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
                 std::cout << Terminal::MAGENTA << "LIST" << Terminal::RESET
                           << " command selected\n";
 
-                if (cmd.sort) {
+                if (cmd.sortFilter) {
                     storage.sortByPriority();
                 }
 
