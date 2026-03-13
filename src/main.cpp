@@ -27,11 +27,8 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
         for (auto& t : tasks) {
             storage.addTask(std::move(t));
         }
+        storage.updateRepeatingTasks(); // проверяем repeating задачи по времени
 
-
-        for (auto& t : tasks) {
-            storage.addTask(std::move(t));
-        }
         storage.updateRepeatingTasks();
         UnderstandCommand command = parser.parse(arg_quant,arg_vec);//просим разобрать то что написал пользователь и получаем variant с одной из комманд
 

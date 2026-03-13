@@ -42,8 +42,12 @@ void RepeatingTask::updateByTime() {
 
     std::tm* local = std::localtime(&t);
 
+    if (!local) return; // Защита если localtime не смог получить время
+
     int currentHour = local->tm_hour;
     int currentMinute = local->tm_min;
+
+    if (timeOfDay_.size() < 5) return; // защита формата HH:MM
 
     int taskHour = std::stoi(timeOfDay_.substr(0,2));
     int taskMinute = std::stoi(timeOfDay_.substr(3,2));
