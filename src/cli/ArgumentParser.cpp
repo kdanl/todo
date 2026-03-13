@@ -1,6 +1,5 @@
 #include "ArgumentParser.hpp"
 
-#include <complex>
 #include <stdexcept>
 #include <string>
 
@@ -53,33 +52,85 @@ UnderstandCommand ArgumentParser::parse(int arg_quant, char *arg_vec[]) const {
         return DoneArguments{TaskId};
     }
     if (command=="add") {
+
         if (arg_quant<3) {
             throw std::invalid_argument("No task title");
         }
+
         std::string TaskTitle = arg_vec[2];
+
         std::optional<std::string> priority; //либо пустой либо содержит значения
         std::optional<std::string> deadline;
+
+        std::optional<std::string> repeat;
+        std::optional<std::string> timeOfDay;
+
         for (int i=3;i<arg_quant;i++) { //читаем все что идет после имени таска
+
             std::string arg = arg_vec[i];
+
             if (arg=="--priority") {
+
                 if (i+1>=arg_quant) {
                     throw std::invalid_argument("No value for priority");
                 }
-                priority = arg_vec[i+1]; //pапоминаем значение приорити
-                i++;//пропускаем дату, i++ вручную пропускает значение, которое уже использовано(например high)
+
+                priority = arg_vec[i+1]; //запоминаем значение приорити
+                i++; //пропускаем значение, которое уже использовано
             }
-            else if (arg=="--deadline"){
+
+            else if (arg=="--deadline") {
+
                 if (i+1>=arg_quant) {
                     throw std::invalid_argument("No value for deadline");
                 }
-                deadline=arg_vec[i+1];
+
+                deadline = arg_vec[i+1];
                 i++;
             }
+
+            // повторяющаяся задача
+            else if (arg=="--repeat") {
+
+                if (i+1>=arg_quant) {
+                    throw std::invalid_argument("No value for repeat");
+                }
+
+                repeat = arg_vec[i+1]; //например daily, weekly
+                i++;
+            }
+
+            // время повторяющейся задачи
+            else if (arg=="--time") {
+
+                if (i+1>=arg_quant) {
+                    throw std::invalid_argument("No value for time");
+                }
+
+                timeOfDay = arg_vec[i+1];
+                i++;
+            }
+
             else {
                 throw std::invalid_argument("Unknown flag: " + arg);//пользователь ввел неподходящую команду
             }
         }
-        return AddArguments{TaskTitle,priority,deadline};
+
+        // нельзя использовать repeat и deadline одновременно
+        if (repeat && deadline) {
+            throw std::invalid_argument("Cannot use --repeat with --deadline");
+        }
+
+        // time можно использовать только вместе с repeat
+        if (timeOfDay && !repeat) {
+            throw std::invalid_argument("--time can only be used with --repeat");
+        }
+
+        if (repeat && !timeOfDay) {
+            throw std::invalid_argument("--repeat requires --time");
+        }
+
+        return AddArguments{TaskTitle,priority,deadline,repeat,timeOfDay};
     }
     if (command=="search") {
         if (arg_quant<3) {
@@ -91,4 +142,3 @@ UnderstandCommand ArgumentParser::parse(int arg_quant, char *arg_vec[]) const {
     throw std::invalid_argument("Unknown command: "+ command);//если ни одно условие не подошло значит команда неизвестна
 
 }
-

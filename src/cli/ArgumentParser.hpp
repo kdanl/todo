@@ -7,10 +7,10 @@
 
 struct AddArguments { //хранит данные для команды добавления задачи
     std::string title;
-    std::optional<std::string> repeat;
-    std::optional<std::string> time;
     std::optional<std::string> priority;
     std::optional<std::string> deadline;
+    std::optional<std::string> repeat;
+    std::optional<std::string> timeOfDay;
 };
 struct ListArguments { //хранит настройки отображения списка задач
     bool ifDone=false;

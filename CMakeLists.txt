@@ -23,7 +23,7 @@ add_executable(todo
 
 target_include_directories(todo PRIVATE src)
 
-# ---------- Google Tests ----------
+
 
 include(FetchContent)
 
