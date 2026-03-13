@@ -22,6 +22,12 @@ int main(int arg_quant, char* arg_vec[]) { //argquant сколько аргум�
 
         auto tasks = fileStorage.load();
 
+
+        for (auto& t : tasks) {
+            storage.addTask(std::move(t));
+        }
+
+
         for (auto& t : tasks) {
             storage.addTask(std::move(t));
         }

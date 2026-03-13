@@ -16,10 +16,12 @@
 namespace {
 
 std::string escape_json(std::string_view s) {
+
     std::string out;
     out.reserve(s.size() + 8);
 
     for (char ch : s) {
+
         switch (ch) {
         case '\\': out += "\\\\"; break;
         case '"':  out += "\\\""; break;
@@ -34,6 +36,7 @@ std::string escape_json(std::string_view s) {
 }
 
 std::optional<std::string> parse_string_field(std::string_view obj, std::string_view key) {
+
     const std::string pattern = "\"" + std::string(key) + "\"";
 
     std::size_t pos = obj.find(pattern);
@@ -55,6 +58,7 @@ std::optional<std::string> parse_string_field(std::string_view obj, std::string_
         char ch = obj[i];
 
         if (escape) {
+
             switch (ch) {
             case 'n': value.push_back('\n'); break;
             case 'r': value.push_back('\r'); break;
@@ -193,14 +197,10 @@ std::vector<std::string_view> split_task_objects(const std::string& json_str) {
     return objects;
 }
 
-} // namespace
-
-
+}
 
 JsonFileStorage::JsonFileStorage(std::string filePath)
     : filePath_(std::move(filePath)) {}
-
-
 
 void JsonFileStorage::save(const TaskList& tasks) {
 
@@ -220,7 +220,8 @@ void JsonFileStorage::save(const TaskList& tasks) {
             << "\"id\": " << t.getId() << ", "
             << "\"title\": \"" << escape_json(t.getTitle()) << "\", "
             << "\"done\": " << (t.isComplete() ? "true" : "false") << ", "
-            << "\"type\": \"" << escape_json(t.getType()) << "\"";
+            << "\"type\": \"" << escape_json(t.getType()) << "\", "
+            << "\"priority\": \"" << escape_json(priorityToString(t.getPriority())) << "\"";
 
         if (t.getType() == "Repeating") {
 
@@ -255,8 +256,6 @@ void JsonFileStorage::save(const TaskList& tasks) {
     }
 }
 
-
-
 TaskList JsonFileStorage::load() {
 
     std::ifstream in(filePath_, std::ios::binary);
@@ -278,16 +277,22 @@ TaskList JsonFileStorage::load() {
         auto title = parse_string_field(obj, "title");
         auto done = parse_bool_field(obj, "done");
         auto type = parse_string_field(obj, "type");
+        auto priority = parse_string_field(obj, "priority");
 
         if (!id || !title || !done || !type) {
             throw StorageError("Invalid task object in storage file: " + filePath_);
         }
 
-        TaskPtr task;
+        Priority p = Priority::Low;
+
+        if (priority) {
+            p = priorityFromString(*priority);
+        }
+
+        std::unique_ptr<Task> task;
 
         if (*type == "Simple") {
-
-            task = std::make_shared<SimpleTask>(*id, *title);
+            task = std::make_unique<SimpleTask>(*id, *title, p);
         }
 
         else if (*type == "Repeating") {
@@ -299,12 +304,7 @@ TaskList JsonFileStorage::load() {
                 throw StorageError("Invalid repeating task in storage file: " + filePath_);
             }
 
-            task = std::make_shared<RepeatingTask>(
-                *id,
-                *title,
-                *frequency,
-                *timeOfDay
-            );
+            task = std::make_unique<RepeatingTask>(*id, *title, *frequency, *timeOfDay, p);
         }
 
         else if (*type == "Deadline") {
@@ -315,11 +315,7 @@ TaskList JsonFileStorage::load() {
                 throw StorageError("Invalid deadline task in storage file: " + filePath_);
             }
 
-            task = std::make_shared<DeadlineTask>(
-                *id,
-                *title,
-                *deadline
-            );
+            task = std::make_unique<DeadlineTask>(*id, *title, *deadline, p);
         }
 
         else {
@@ -330,7 +326,7 @@ TaskList JsonFileStorage::load() {
             task->markDone();
         }
 
-        tasks.push_back(task);
+        tasks.push_back(std::move(task));
     }
 
     return tasks;

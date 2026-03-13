@@ -12,21 +12,6 @@ add_executable(todo
 
         src/core/Task.cpp
         src/core/SimpleTask.cpp
-
-        src/core/DeadlineTask.hpp
-        src/core/DeadlineTask.cpp
-        src/core/RecurringTask.hpp
-        src/core/TaskRepository.hpp
-        src/storage/Storage.hpp
-        src/storage/JsonFileStorage.hpp
-        src/storage/JsonFileStorage.cpp
-        src/utils/Exceptions.hpp
-        src/utils/Constants.hpp
-        tests/TaskTests.cpp
-        tests/RepositoryTests.cpp
-        tests/ParserTests.cpp
-        src/cli/terminal.hpp
-
         src/core/DeadlineTask.cpp
         src/core/RepeatingTask.cpp
         src/core/TaskStorage.cpp
@@ -34,6 +19,22 @@ add_executable(todo
         src/storage/JsonFileStorage.cpp
 
         src/utils/DateUtils.cpp
-
 )
+
 target_include_directories(todo PRIVATE src)
+
+# ---------- Google Tests ----------
+
+include(FetchContent)
+
+FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+
+FetchContent_MakeAvailable(googletest)
+
+enable_testing()
+
+add_subdirectory(tests)
