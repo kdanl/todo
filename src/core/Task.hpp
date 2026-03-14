@@ -1,5 +1,4 @@
-#ifndef TASK_HPP
-#define TASK_HPP
+#pragma once
 #include <string>
 enum class Priority {
     Low,
@@ -31,5 +30,3 @@ public:
     virtual std::string getType() const = 0;
     virtual std::string toString() const = 0;
 };
-
-#endif

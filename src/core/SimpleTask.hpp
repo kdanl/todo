@@ -1,5 +1,4 @@
-#ifndef SIMPLETASK_HPP
-#define SIMPLETASK_HPP
+#pragma once
 #include "Task.hpp"
 class SimpleTask : public Task {
 public:
@@ -7,4 +6,3 @@ public:
     std::string getType() const override;
     std::string toString() const override;
 };
-#endif

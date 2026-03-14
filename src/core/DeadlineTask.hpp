@@ -1,5 +1,4 @@
-#ifndef DEADLINETASK_HPP
-#define DEADLINETASK_HPP
+#pragma once
 
 #include "Task.hpp"
 #include <string>
@@ -15,5 +14,3 @@ public:
     std::string getType() const override;
     std::string toString() const override;
 };
-
-#endif

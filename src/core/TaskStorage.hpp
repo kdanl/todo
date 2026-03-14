@@ -1,5 +1,4 @@
-#ifndef TASKSTORAGE_HPP
-#define TASKSTORAGE_HPP
+#pragma once
 
 #include <memory>
 #include <vector>
@@ -31,5 +30,3 @@ public:
 
     void updateRepeatingTasks();
 };
-
-#endif
