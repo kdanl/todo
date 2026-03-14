@@ -17,8 +17,6 @@ add_executable(todo
         src/core/TaskStorage.cpp
 
         src/storage/JsonFileStorage.cpp
-
-        src/utils/DateUtils.cpp
 )
 
 target_include_directories(todo PRIVATE src)

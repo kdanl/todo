@@ -11,8 +11,6 @@ add_executable(todo_tests
 
         ../src/storage/JsonFileStorage.cpp
 
-        ../src/utils/DateUtils.cpp
-
         ../src/cli/ArgumentParser.cpp
 )
 
