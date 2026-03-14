@@ -1,10 +1,10 @@
 #include "JsonFileStorage.hpp"
 
-#include "../core/DeadlineTask.hpp"
-#include "../core/RepeatingTask.hpp"
-#include "../core/SimpleTask.hpp"
-#include "../core/Task.hpp"
-#include "../utils/Exceptions.hpp"
+#include "core/DeadlineTask.hpp"
+#include "core/RepeatingTask.hpp"
+#include "core/SimpleTask.hpp"
+#include "core/Task.hpp"
+#include "utils/Exceptions.hpp"
 
 #include <fstream>
 #include <optional>
