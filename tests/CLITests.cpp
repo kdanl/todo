@@ -4,9 +4,8 @@
 
 
 
-/* =========================
-   HELP
-   ========================= */
+//HELP
+
 
 TEST(ParserTest, HelpWhenNoArguments) {
 
@@ -32,9 +31,8 @@ TEST(ParserTest, ExplicitHelpCommand) {
 
 
 
-/* =========================
-   STATS
-   ========================= */
+
+   //STATS
 
 TEST(ParserTest, StatsCommand) {
 
@@ -49,9 +47,9 @@ TEST(ParserTest, StatsCommand) {
 
 
 
-/* =========================
-   LIST
-   ========================= */
+
+   //LIST
+
 
 TEST(ParserTest, ListCommand) {
 
@@ -98,9 +96,9 @@ TEST(ParserTest, ListPriorityFilter) {
 
 
 
-/* =========================
-   DONE
-   ========================= */
+
+   //DONE
+
 
 TEST(ParserTest, DoneCommand) {
 
@@ -117,9 +115,9 @@ TEST(ParserTest, DoneCommand) {
 
 
 
-/* =========================
-   SEARCH
-   ========================= */
+
+   //SEARCH
+
 
 TEST(ParserTest, SearchCommand) {
 
@@ -136,9 +134,9 @@ TEST(ParserTest, SearchCommand) {
 
 
 
-/* =========================
-   ADD SIMPLE TASK
-   ========================= */
+
+   //ADD SIMPLE TASK
+
 
 TEST(ParserTest, AddSimpleTask) {
 
@@ -156,9 +154,9 @@ TEST(ParserTest, AddSimpleTask) {
 
 
 
-/* =========================
-   ADD WITH PRIORITY
-   ========================= */
+
+   //ADD WITH PRIORITY
+
 
 TEST(ParserTest, AddWithPriority) {
 
@@ -182,9 +180,9 @@ TEST(ParserTest, AddWithPriority) {
 
 
 
-/* =========================
-   ADD DEADLINE TASK
-   ========================= */
+
+   //ADD DEADLINE TASK
+
 
 TEST(ParserTest, AddDeadlineTask) {
 
@@ -208,9 +206,9 @@ TEST(ParserTest, AddDeadlineTask) {
 
 
 
-/* =========================
-   ADD REPEATING TASK
-   ========================= */
+
+   //ADD REPEATING TASK
+
 
 TEST(ParserTest, AddRepeatingTask) {
 
@@ -239,9 +237,9 @@ TEST(ParserTest, AddRepeatingTask) {
 
 
 
-/* =========================
-   ERROR CASES
-   ========================= */
+
+   //ERROR CASES
+
 
 TEST(ParserTest, RepeatWithoutTimeThrows) {
 

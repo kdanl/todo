@@ -7,9 +7,8 @@
 
 
 
-/* =========================
-   SimpleTask
-   ========================= */
+   //SimpleTask
+
 
 TEST(SimpleTaskTest, Creation) {
 
@@ -40,9 +39,9 @@ TEST(SimpleTaskTest, ToStringContainsTitle) {
 
 
 
-/* =========================
-   DeadlineTask
-   ========================= */
+
+   //DeadlineTask
+
 
 TEST(DeadlineTaskTest, Creation) {
 
@@ -69,9 +68,9 @@ TEST(DeadlineTaskTest, ToStringContainsDeadline) {
 
 
 
-/* =========================
-   RepeatingTask
-   ========================= */
+
+   //RepeatingTask
+
 
 TEST(RepeatingTaskTest, Creation) {
 
@@ -100,9 +99,9 @@ TEST(RepeatingTaskTest, ToStringContainsRepeatInfo) {
 
 
 
-/* =========================
-   TaskStorage
-   ========================= */
+
+   //TaskStorage
+
 
 TEST(TaskStorageTest, AddTask) {
 
