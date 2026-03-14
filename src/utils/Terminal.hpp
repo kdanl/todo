@@ -27,7 +27,7 @@ namespace Terminal {
         std::cout<<LIGHT_GRAY<< "  ./todo add \"Homework\" --priority high\n";
         std::cout<<LIGHT_GRAY<< "  ./todo add \"Project\" --deadline 2026-03-10\n";
         std::cout<<LIGHT_GRAY<< "  ./todo list --done\n";
-        std::cout<<LIGHT_GRAY<< "  ./todo list --priority high --sort deadline\n";
+        std::cout<<LIGHT_GRAY<< "  ./todo list --priority high --sort priority\n";
         std::cout <<LIGHT_GRAY<< "  ./todo done 3\n";
         std::cout<<LIGHT_GRAY<< "  ./todo search milk\n";
     }
