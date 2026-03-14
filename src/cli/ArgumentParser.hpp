@@ -1,34 +1,34 @@
-//ArgumentParser переводит массив строк в структуру данных.
+
 #pragma once
 #include <optional>
 #include <string>
 #include <variant>
 
 
-struct AddArguments { //хранит данные для команды добавления задачи
+struct AddArguments {
     std::string title;
     std::optional<std::string> priority;
     std::optional<std::string> deadline;
     std::optional<std::string> repeat;
     std::optional<std::string> timeOfDay;
 };
-struct ListArguments { //хранит настройки отображения списка задач
+struct ListArguments {
     bool ifDone=false;
-    bool ifUndone=false; //присваиваю фолс тк это начальное значение иначе будет мусор
-    std::optional<std::string> priorityFilter; //eсли написал --priority high будет "high".
+    bool ifUndone=false;
+    std::optional<std::string> priorityFilter;
     std::optional<std::string> sortFilter;
 };
-struct DoneArguments { //хранит номер задачи
+struct DoneArguments {
     int id;
 };
-struct SearchArguments { //хранит слово для поиска задач
+struct SearchArguments {
     std::string word;
 };
-struct StatsArguments { //пользователь хочет посмотреть статистику задач
+struct StatsArguments {
 };
-struct HelpArguments { //пользователь хочет увидеть справку программы
+struct HelpArguments {
 };
-using UnderstandCommand = std::variant< //одна функция parse() всегда возвращает один тип UnderstandCommand а внутри уже может скрываться любая из команд.
+using UnderstandCommand = std::variant<
     AddArguments,
     ListArguments,
     DoneArguments,
@@ -38,6 +38,5 @@ using UnderstandCommand = std::variant< //одна функция parse() все
 >;
 class ArgumentParser {
 public:
-    UnderstandCommand parse(int arg_quant,char* arg_vec[]) const; //char* - указатель на строку, char* [] - указатель на массив
+    UnderstandCommand parse(int arg_quant,char* arg_vec[]) const;
 };
-//Поэтому роль ArgumentParser:разобрать ввод пользователя и превратить его в понятную структуру.

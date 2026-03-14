@@ -1,3 +1,4 @@
+//реализация ArgumentParser.hpp
 #include "ArgumentParser.hpp"
 
 #include <stdexcept>
@@ -5,10 +6,10 @@
 
 UnderstandCommand ArgumentParser::parse(int arg_quant, char *arg_vec[]) const {
     if (arg_quant<2) {
-        return HelpArguments{}; //если аргументов меньше чем два то мы открываем пользователю справку тк не ввел ничего кроме имени программы
+        return HelpArguments{};
     }
-    std::string command = arg_vec[1]; //берем второй аргумент после command
-    if (command=="help") { //если пользователь ввел хелп
+    std::string command = arg_vec[1];
+    if (command=="help") {
         return HelpArguments{};
     }
     if (command=="stats") {
@@ -45,10 +46,10 @@ UnderstandCommand ArgumentParser::parse(int arg_quant, char *arg_vec[]) const {
         return ListArgs;
     }
     if (command=="done") {
-        if (arg_quant<3) { //todо done 3 arg vec[2]=3 то есть если меньше 3 слов, то пользователь просто не ввел айди
-            throw std::invalid_argument("No task id"); //invalid тип ошибки из стандартной библиотеки.Он означает:передан неправильный аргумент.
+        if (arg_quant<3) {
+            throw std::invalid_argument("No task id");
         }
-        int TaskId = std::stoi(arg_vec[2]); //stoi превращает строку в число, например строку пользователя '3' мы делаем в 3.
+        int TaskId = std::stoi(arg_vec[2]);
         return DoneArguments{TaskId};
     }
     if (command=="add") {
@@ -59,13 +60,13 @@ UnderstandCommand ArgumentParser::parse(int arg_quant, char *arg_vec[]) const {
 
         std::string TaskTitle = arg_vec[2];
 
-        std::optional<std::string> priority; //либо пустой либо содержит значения
+        std::optional<std::string> priority;
         std::optional<std::string> deadline;
 
         std::optional<std::string> repeat;
         std::optional<std::string> timeOfDay;
 
-        for (int i=3;i<arg_quant;i++) { //читаем все что идет после имени таска
+        for (int i=3;i<arg_quant;i++) {
 
             std::string arg = arg_vec[i];
 
@@ -75,8 +76,8 @@ UnderstandCommand ArgumentParser::parse(int arg_quant, char *arg_vec[]) const {
                     throw std::invalid_argument("No value for priority");
                 }
 
-                priority = arg_vec[i+1]; //запоминаем значение приорити
-                i++; //пропускаем значение, которое уже использовано
+                priority = arg_vec[i+1];
+                i++;
             }
 
             else if (arg=="--deadline") {
@@ -89,18 +90,17 @@ UnderstandCommand ArgumentParser::parse(int arg_quant, char *arg_vec[]) const {
                 i++;
             }
 
-            // повторяющаяся задача
+
             else if (arg=="--repeat") {
 
                 if (i+1>=arg_quant) {
                     throw std::invalid_argument("No value for repeat");
                 }
 
-                repeat = arg_vec[i+1]; //например daily, weekly
+                repeat = arg_vec[i+1];
                 i++;
             }
 
-            // время повторяющейся задачи
             else if (arg=="--time") {
 
                 if (i+1>=arg_quant) {
@@ -112,16 +112,15 @@ UnderstandCommand ArgumentParser::parse(int arg_quant, char *arg_vec[]) const {
             }
 
             else {
-                throw std::invalid_argument("Unknown flag: " + arg);//пользователь ввел неподходящую команду
+                throw std::invalid_argument("Unknown flag: " + arg);
             }
         }
 
-        // нельзя использовать repeat и deadline одновременно
         if (repeat && deadline) {
             throw std::invalid_argument("Cannot use --repeat with --deadline");
         }
 
-        // time можно использовать только вместе с repeat
+
         if (timeOfDay && !repeat) {
             throw std::invalid_argument("--time can only be used with --repeat");
         }
@@ -139,6 +138,6 @@ UnderstandCommand ArgumentParser::parse(int arg_quant, char *arg_vec[]) const {
         std::string FindWord = arg_vec[2];
         return SearchArguments{FindWord};
     }
-    throw std::invalid_argument("Unknown command: "+ command);//если ни одно условие не подошло значит команда неизвестна
+    throw std::invalid_argument("Unknown command: "+ command);
 
 }
